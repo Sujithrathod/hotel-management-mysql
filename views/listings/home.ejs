@@ -1,0 +1,29 @@
+<% layout("/layouts/boilerplatehome") %>
+<body>
+    <div class="wrapper">
+        <form method="post" action="/">
+            <h1>Login</h1>
+            <div class="input-box">
+                <label for="username"></label>
+                <input type="text" placeholder="Username" name="username" required>
+                <box-icon type='solid' name='user'></box-icon>
+            </div>
+            <div class="input-box">
+                <label for="password"></label>
+                <input type="password" placeholder="Password" name="password" required>
+                <box-icon name='lock-alt' type='solid' ></box-icon>
+            </div>
+
+            <div class="remember-forgot">
+                <label><input type="checkbox"> Remember me</label>
+                <a href="#">Forget Password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Login</button>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="#">Register</a></p>
+            </div>
+        </form>
+    </div>
+</body>
