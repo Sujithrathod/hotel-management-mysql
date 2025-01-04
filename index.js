@@ -2,8 +2,17 @@ const mysql = require("mysql2");
 const express = require("express");
 const app = express();
 const path = require("path");
-const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const {faker} = require("@faker-js/faker");
+const methodOverride = require("method-override");
+app.use(express.json());
+
+let id = ()=>{
+    return {
+        id:faker.string.uuid()
+    };
+};
+
 const connection = mysql.createConnection({
     host:"localhost",
     user:"root",
@@ -15,6 +24,7 @@ app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
+
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
@@ -37,6 +47,17 @@ app.use(express.static(path.join(__dirname,"/public")));
 // }catch(err){
 //     console.log("loginfo error");
 // };
+
+// let clinetschema = "create table client(id varchar(100) primary key,name varchar(50), age int,title varchar(50))";
+// try{
+//     connection.query(clinetschema,(err,result)=>{
+//         if (err) throw err;
+//         console.log("schema created");
+//     })
+// }catch(err){
+//     console.log("error in creating schema");
+// };
+
 
 const port = 8080;
 
@@ -139,9 +160,98 @@ app.post("/",async(req,res)=>{
         connection.query("insert into loginfo (username,password) values (?,?)",data,(err,result)=>{
             if (err) throw err;
             console.log("loginfo is updated");
-            res.redirect("/listings");
+            res.redirect("/second");
         })
     }catch(err){
         console.log("error in loginfo");
+    }
+});
+
+app.get("/second",(req,res)=>{
+    res.render("./listings/secondpage.ejs");
+})
+
+app.get("/client",(req,res)=>{
+    try{
+        connection.query("select * from info",(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/client1.ejs",{allListings : results});
+        })
+    }catch(err){
+        console.log("some error in index.ejs check")
+    }
+});
+
+app.get("/client/:title",async(req,res)=>{
+    const {title} = req.params;
+    console.log(title);
+    try{
+        connection.query(`select * from info where title = "${title}"`,(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/clientshow.ejs",{result : results[0]});
+        })
+    }catch(err){
+        console.log("error in getting data");
+    }
+});
+
+app.get("/book/:title",async(req,res)=>{
+    const {title} = req.params;
+    console.log(title);
+    try{
+        connection.query(`select * from info where title = "${title}"`,(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/book.ejs",{result : results[0]});
+        })
+    }catch(err){
+        console.log("error in getting data");
+    }
+});
+
+
+app.post("/book",async(req,res)=>{
+    let {name:nname,age:nage,title:ntitle} = req.body;
+    let data = [id().id,nname,nage,ntitle];
+    let q = "insert into client(id,name,age,title) values (?,?,?,?)";
+    try{
+        connection.query(q,data,(err,result)=>{
+            if (err) throw err;
+            console.log("inserted");
+            res.send("booking successful");
+        })
+    }catch(err){
+        console.log("error in post book");
+    }
+});
+
+app.get("/bookings",(req,res)=>{
+    let q = "select * from client";
+    try{
+        connection.query(q,(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/bookings.ejs",{result : results});
+        })
+    }catch(err){
+        console.log("error in bookings");
+    }
+});
+
+app.delete("/book/:id",(req,res)=>{
+    let {id} = req.params;
+    console.log(id);
+    try{
+        connection.query("DELETE FROM client WHERE id = ?", id,(err,result)=>{
+            if (err) throw err;
+            console.log("deletion is completed");
+            try{
+                connection.query("select * from client",(err,resul)=>{
+                    res.render("./listings/bookings.ejs",{result : resul})
+                })
+            }catch(err){
+                console.log("error in delete");
+            }
+        });
+    }catch(err){
+        console.log("error in deleting");
     }
 });

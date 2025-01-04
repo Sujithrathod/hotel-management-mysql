@@ -1,0 +1,18 @@
+body{
+    background: url("https://img.freepik.com/free-photo/black-smooth-wall-textured-background_53876-124461.jpg?semt=ais_hybrid");
+}
+
+.container{
+    margin-top: 300px;
+    margin-left: 250px;
+    margin-right: 250px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button{
+    width: 350px;
+    height: 250px;
+    font-weight: 500;
+    font-size: 50px;
+}

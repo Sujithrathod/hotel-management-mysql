@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@faker-js/faker": "^9.3.0",
     "bootstrap-icons": "^1.11.3",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",

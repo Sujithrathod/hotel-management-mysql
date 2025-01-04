@@ -1,0 +1,25 @@
+<% layout("/layouts/clientnav") %>
+<body>
+    <div class="row">
+        <div class="col-8 offset-2 mt-3">
+    <h1>Listing Details:</h1>
+    </div>
+
+    <div class="card col-6 offset-2">
+        <img src="<%=result.image%>" class="card-img-top show-img" alt="listing-image">
+        <div class="card-body">
+            <b><p class="card-text"></p></b>
+            <b><p><%=result.title%></p></b>
+            <b><p><%=result.description%></p></b>
+            <b><p>&#8377;<%=result.price%></p></b>
+            <b><p><%=result.location%></p></b>
+            <b><p><%=result.country%></p></b>
+        </div>
+    </div>
+    <div class="btns">
+        <form method="get" action= "/book/<%=result.title%>">
+            <button style="margin-left: 215px; margin-bottom:75px;" class="btn btn-dark">Book</button>
+        </form>
+    </div>
+</div>
+</body>

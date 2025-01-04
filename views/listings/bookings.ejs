@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table class="table" border="black">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>House Name</th>
+            </tr>
+        </thead>
+        <tbody>
+                <% for (res of result){ %>
+                <tr>
+                    <td><%= res.id %></td>
+                    <td><%= res.name %></td>
+                    <td><%= res.age %></td>
+                    <td><%= res.title %></td>
+                    <td> 
+                        <form method="post" action="/book/<%=res.id%>?_method=DELETE">
+                            <button type="submit" >delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }; %>
+        </tbody>
+    </table>
+</body>
+</html>
