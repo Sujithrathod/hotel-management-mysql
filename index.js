@@ -106,7 +106,7 @@ app.delete("/listings/:title",async(req,res)=>{
 });
 
 app.post("/listings",async(req,res)=>{
-    let{title:ntitle,description:ndescription,price:nprice,location:nlocation,country:ncountry,image:nimage} = req.body;
+    let{title:ntitle,description:ndescription,price:nprice,location:nlocation,country:ncountry,image:nimage} = req.body; //changed here
     const data = [ntitle,ndescription,nimage,nprice,nlocation,ncountry];
     try{
         connection.query("insert into info (title,description,image, price,location,country) values (?,?,?,?,?,?)",data,(err,result)=>{
