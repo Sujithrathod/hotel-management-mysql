@@ -78,10 +78,10 @@ app.get("/listings/:title",async(req,res)=>{
 
 app.put("/listings/:title",async(req,res)=>{
     let {title} = req.params;
-    let {title:ntitle,description:ndescription,price:nprice,location:nlocation,country:ncountry,image:nimage} = req.body;
-    const params = [ntitle, ndescription,nimage, nprice, nlocation, ncountry, title];
+    let {title:ntitle,description:ndescription,image:nimage,price:nprice,location:nlocation,country:ncountry} = req.body;
+    const params = [ntitle, ndescription, nimage, nprice, nlocation, ncountry, title];
     try{
-        connection.query(`UPDATE info SET title = ?,description = ?,image= ?,price = ? ,location = ? ,country = ? WHERE title = ?`,params,(err,result)=>{
+        connection.query(`UPDATE info SET title = ?,description = ?,image = ?,price = ? ,location = ? ,country = ? WHERE title = ?`,params,(err,result)=>{
             if (err) throw err;
             console.log("got updated");
             res.redirect("/listings");
