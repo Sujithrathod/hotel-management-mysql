@@ -28,7 +28,7 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
-// let sqlschema = "create table info(title varchar(50),description varchar(500),image varchar(5000), price int,location varchar(50), country varchar(50))";
+// let sqlschema = "create table info(title varchar(50) primary key,description varchar(500),image varchar(5000), price int,location varchar(50), country varchar(50))";
 // try{
 //     connection.query(sqlschema,(err,res)=>{
 //         if(err) throw err;
@@ -48,16 +48,15 @@ app.use(express.static(path.join(__dirname,"/public")));
 //     console.log("loginfo error");
 // };
 
-// let clinetschema = "create table client(id varchar(100) primary key,name varchar(50), age int,title varchar(50))";
-// try{
-//     connection.query(clinetschema,(err,result)=>{
-//         if (err) throw err;
-//         console.log("schema created");
-//     })
-// }catch(err){
-//     console.log("error in creating schema");
-// };
-
+    // let clinetschema = "create table client(id varchar(100) primary key,name varchar(50), age int,title varchar(50),FOREIGN KEY (title) REFERENCES info(title))";
+    // try{
+    //     connection.query(clinetschema,(err,result)=>{
+    //         if (err) throw err;
+    //         console.log("schema created");
+    //     })
+    // }catch(err){
+    //     console.log("error in creating schema");
+    // };
 
 const port = 8080;
 
@@ -253,5 +252,33 @@ app.delete("/book/:id",(req,res)=>{
         });
     }catch(err){
         console.log("error in deleting");
+    }
+});
+
+app.get("/bookings/:id",(req,res)=>{
+    let {id} = req.params;
+    try{
+        connection.query("select * from client where id = ?",id,(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/clientupdate.ejs", {result : results[0]})
+            console.log(results);
+        })
+    }catch(err){
+        console.log("error in update");
+    }
+})
+
+app.put("/book/:id",async(req,res)=>{
+    let {id} = req.params;
+    let {title:ntitle,name:nname,age:nage} = req.body;
+    const params = [nname,nage,ntitle,id];
+    try{
+        connection.query(`UPDATE client SET name= ?, age= ?, title = ? WHERE id = ?`,params,(err,result)=>{
+            if (err) throw err;
+            console.log("got updated");
+            res.redirect("/client");
+        })
+    }catch(err){
+        console.log("error in update")
     }
 });

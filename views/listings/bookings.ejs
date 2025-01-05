@@ -24,7 +24,12 @@
                     <td><%= res.title %></td>
                     <td> 
                         <form method="post" action="/book/<%=res.id%>?_method=DELETE">
-                            <button type="submit" >delete</button>
+                            <button type="submit" >Delete</button>
+                        </form>
+                    </td>
+                    <td> 
+                        <form method="get" action="/bookings/<%=res.id%>">
+                            <button type="submit" >Update</button>
                         </form>
                     </td>
                 </tr>

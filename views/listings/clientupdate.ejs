@@ -1,0 +1,20 @@
+<% layout("/layouts/clientnav") %>
+<body>
+    <h3>Edit your listing</h3>
+    <form method="post" action="/book/<%=result.id%>?_method=PUT">
+        <div>
+            <label for="name" class="form-label">Name</label>
+            <input name="name" value="<%= result.name %>" class="form-control">
+        </div>
+        <div>
+            <label for="age" class="form-label">price</label>
+            <input name="age" value="<%= result.age %>" type="number"  class="form-control">
+        </div>
+        <div>
+            <label for="title" class="form-label">title</label>
+            <input name="title" value="<%= result.title %>" class="form-control">
+        </div>
+        <button class="btn btn-dark mt-3">Edit</button>
+    </form>
+</body>
+</html>
