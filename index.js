@@ -58,6 +58,16 @@ app.use(express.static(path.join(__dirname,"/public")));
     //     console.log("error in creating schema");
     // };
 
+// let reviewschmea = "create table review(review_id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(50), title VARCHAR(50),rating INT CHECK (rating BETWEEN 1 AND 5),comment VARCHAR(500),FOREIGN KEY (title) REFERENCES info(title))";
+// try{
+//     connection.query(reviewschmea,(err,result)=>{
+//         if (err) throw err;
+//         console.log("schema created");
+//     })
+// }catch(err){
+//     console.log("error in creating schema");
+// };
+
 const port = 8080;
 
 app.listen(port,()=>{
@@ -183,7 +193,6 @@ app.get("/client",(req,res)=>{
 
 app.get("/client/:title",async(req,res)=>{
     const {title} = req.params;
-    console.log(title);
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
             if (err) throw err;
@@ -196,7 +205,6 @@ app.get("/client/:title",async(req,res)=>{
 
 app.get("/book/:title",async(req,res)=>{
     const {title} = req.params;
-    console.log(title);
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
             if (err) throw err;
@@ -237,7 +245,6 @@ app.get("/bookings",(req,res)=>{
 
 app.delete("/book/:id",(req,res)=>{
     let {id} = req.params;
-    console.log(id);
     try{
         connection.query("DELETE FROM client WHERE id = ?", id,(err,result)=>{
             if (err) throw err;
@@ -282,3 +289,40 @@ app.put("/book/:id",async(req,res)=>{
         console.log("error in update")
     }
 });
+
+app.get("/review/:title",(req,res)=>{
+    let {title} = req.params;
+    console.log(title);
+    try{
+        connection.query("select * from info where title = ?",title,(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/review.ejs",{res : results[0]})
+        })
+    }catch(err){
+        console.log("error in review");
+    }
+});
+
+app.post("/review",(req,res)=>{
+    let {rating:nrating,name:nname,comment:ncomment,title:ntitle} = req.body;
+    let data = [ntitle,nname,nrating,ncomment];
+    try{
+        connection.query("insert into review(title,name,rating,comment) values (?,?,?,?)",data,(err,result)=>{
+            if (err) throw err;
+            res.send("Thanks for your valuable time");
+        })
+    }catch(err){
+        console.log("error in review update");
+    }
+});
+
+app.get("/reviews",(req,res)=>{
+    try{
+        connection.query("select * from review",(err,results)=>{
+            if (err) throw err;
+            res.render("./listings/allreview.ejs",{result : results});
+        })
+    }catch(err){
+        console.log("error in getting review");
+    }
+})

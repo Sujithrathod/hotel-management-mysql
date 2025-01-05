@@ -1,0 +1,25 @@
+<% layout("/layouts/clientnav") %>
+<body>
+    <table class="table" border="black">
+        <thead>
+            <tr>
+                <th>Review ID</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Rating</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+                <% for (res of result){ %>
+                <tr>
+                    <td><%= res.review_id %></td>
+                    <td><%= res.name %></td>
+                    <td><%= res.title %></td>
+                    <td><%= res.rating %></td>
+                    <td><%= res.comment %></td>
+                </tr>
+            <% }; %>
+        </tbody>
+    </table>
+</body>
