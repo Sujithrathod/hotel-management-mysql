@@ -48,7 +48,7 @@ app.use(express.static(path.join(__dirname,"/public")));
 //     console.log("loginfo error");
 // };
 
-    // let clinetschema = "create table client(id varchar(100) primary key,name varchar(50), age int,title varchar(50),FOREIGN KEY (title) REFERENCES info(title))";
+    // let clinetschema = "create table client(id varchar(100) primary key,name varchar(50),date DATE, age int,title varchar(50),FOREIGN KEY (title) REFERENCES info(title))";
     // try{
     //     connection.query(clinetschema,(err,result)=>{
     //         if (err) throw err;
@@ -58,7 +58,7 @@ app.use(express.static(path.join(__dirname,"/public")));
     //     console.log("error in creating schema");
     // };
 
-// let reviewschmea = "create table review(review_id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(50), title VARCHAR(50),rating INT CHECK (rating BETWEEN 1 AND 5),comment VARCHAR(500),FOREIGN KEY (title) REFERENCES info(title))";
+// let reviewschmea = "create table review(review_id INT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(50),title VARCHAR(50),rating INT CHECK (rating BETWEEN 1 AND 5),comment VARCHAR(500),FOREIGN KEY (title) REFERENCES info(title))";
 // try{
 //     connection.query(reviewschmea,(err,result)=>{
 //         if (err) throw err;
@@ -217,9 +217,9 @@ app.get("/book/:title",async(req,res)=>{
 
 
 app.post("/book",async(req,res)=>{
-    let {name:nname,age:nage,title:ntitle} = req.body;
-    let data = [id().id,nname,nage,ntitle];
-    let q = "insert into client(id,name,age,title) values (?,?,?,?)";
+    let {name:nname,age:nage,title:ntitle,date:ndate} = req.body;
+    let data = [id().id,nname,ndate,nage,ntitle];
+    let q = "insert into client(id,name,date,age,title) values (?,?,?,?,?)";
     try{
         connection.query(q,data,(err,result)=>{
             if (err) throw err;
@@ -277,10 +277,11 @@ app.get("/bookings/:id",(req,res)=>{
 
 app.put("/book/:id",async(req,res)=>{
     let {id} = req.params;
-    let {title:ntitle,name:nname,age:nage} = req.body;
-    const params = [nname,nage,ntitle,id];
+    let {title:ntitle,name:nname,age:nage,date:ndate} = req.body;
+    const params = [nname,nage,ndate,ntitle,id];
+    console.log(params);
     try{
-        connection.query(`UPDATE client SET name= ?, age= ?, title = ? WHERE id = ?`,params,(err,result)=>{
+        connection.query(`UPDATE client SET name= ?, age= ?,date= ?, title = ? WHERE id = ?`,params,(err,result)=>{
             if (err) throw err;
             console.log("got updated");
             res.redirect("/client");
