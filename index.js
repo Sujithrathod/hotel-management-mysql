@@ -70,15 +70,20 @@ app.use(express.static(path.join(__dirname,"/public")));
 
 const port = process.env.PORT || 3000;;
 
+// Helper to wrap async handlers
+const asyncHandler = (fn) => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+};
+
 app.listen(port,()=>{
     console.log(`server is listening to port ${port}`);
 });
 
-app.get("/",async(req,res)=>{
+app.get("/",asyncHandler(async(req,res)=>{
     res.render("./listings/home.ejs");
-});
+}));
 
-app.get("/listings",async(req,res)=>{
+app.get("/listings",asyncHandler(async(req,res)=>{
     try{
         connection.query("select * from info",(err,results)=>{
             res.render("./listings/index.ejs",{allListings : results});
@@ -86,13 +91,13 @@ app.get("/listings",async(req,res)=>{
     }catch(err){
         console.log("some error in index.ejs check")
     }
-});
+}));
 
 app.get("/listings/new",(req,res)=>{
     res.render("./listings/new.ejs");
 });
 
-app.get("/listings/:title",async(req,res)=>{
+app.get("/listings/:title",asyncHandler(async(req,res)=>{
     const {title} = req.params;
     console.log(title);
     try{
@@ -102,9 +107,9 @@ app.get("/listings/:title",async(req,res)=>{
     }catch(err){
         console.log("error in getting data");
     }
-});
+}));
 
-app.put("/listings/:title",async(req,res)=>{
+app.put("/listings/:title",asyncHandler(async(req,res)=>{
     let {title} = req.params;
     let {title:ntitle,description:ndescription,image:nimage,price:nprice,location:nlocation,country:ncountry} = req.body;
     const params = [ntitle, ndescription, nimage, nprice, nlocation, ncountry, title];
@@ -116,10 +121,10 @@ app.put("/listings/:title",async(req,res)=>{
     }catch(err){
         console.log("error in update")
     }
-});
+}));
 
 
-app.delete("/listings/:title",async(req,res)=>{
+app.delete("/listings/:title",asyncHandler(async(req,res)=>{
     let {title} = req.params;
     try{
         connection.query("delete from info where title = ?",title,(err,result)=>{
@@ -129,9 +134,9 @@ app.delete("/listings/:title",async(req,res)=>{
     }catch(err){
         console.log("error in delete");
     }
-});
+}));
 
-app.post("/listings",async(req,res)=>{
+app.post("/listings",asyncHandler(async(req,res)=>{
     let{title:ntitle,description:ndescription,price:nprice,location:nlocation,country:ncountry,image:nimage} = req.body; //changed here
     const data = [ntitle,ndescription,nimage,nprice,nlocation,ncountry];
     try{
@@ -142,9 +147,9 @@ app.post("/listings",async(req,res)=>{
     }catch(err){
         console.log("error in insert");
     }
-});
+}));
 
-app.get("/listings/:title/edit",async(req,res)=>{
+app.get("/listings/:title/edit",asyncHandler(async(req,res)=>{
     const {title} = req.params;
     try{
         connection.query(`select * from info where title = "${title}"`,(err,result)=>{
@@ -154,9 +159,9 @@ app.get("/listings/:title/edit",async(req,res)=>{
     }catch(err){
         console.log("update error");
     }
-});
+}));
 
-app.post("/",async(req,res)=>{
+app.post("/",asyncHandler(async(req,res)=>{
     let{username,password} = req.body;
     let data = [username,password];
     try{
@@ -167,7 +172,7 @@ app.post("/",async(req,res)=>{
     }catch(err){
         console.log("error in loginfo");
     }
-});
+}));
 
 app.get("/second",(req,res)=>{
     res.render("./listings/secondpage.ejs");
@@ -183,7 +188,7 @@ app.get("/client",(req,res)=>{
     }
 });
 
-app.get("/client/:title",async(req,res)=>{
+app.get("/client/:title",asyncHandler(async(req,res)=>{
     const {title} = req.params;
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
@@ -192,9 +197,9 @@ app.get("/client/:title",async(req,res)=>{
     }catch(err){
         console.log("error in getting data");
     }
-});
+}));
 
-app.get("/book/:title",async(req,res)=>{
+app.get("/book/:title",asyncHandler(async(req,res)=>{
     const {title} = req.params;
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
@@ -203,10 +208,10 @@ app.get("/book/:title",async(req,res)=>{
     }catch(err){
         console.log("error in getting data");
     }
-});
+}));
 
 
-app.post("/book",async(req,res)=>{
+app.post("/book",asyncHandler(async(req,res)=>{
     let {name:nname,age:nage,title:ntitle,date:ndate} = req.body;
     let data = [id().id,nname,ndate,nage,ntitle];
     let q = "insert into client(id,name,date,age,title) values (?,?,?,?,?)";
@@ -218,7 +223,7 @@ app.post("/book",async(req,res)=>{
     }catch(err){
         console.log("error in post book");
     }
-});
+}));
 
 app.get("/bookings",(req,res)=>{
     let q = "select * from client";
@@ -261,7 +266,7 @@ app.get("/bookings/:id",(req,res)=>{
     }
 })
 
-app.put("/book/:id",async(req,res)=>{
+app.put("/book/:id",asyncHandler(async(req,res)=>{
     let {id} = req.params;
     let {title:ntitle,name:nname,age:nage,date:ndate} = req.body;
     const params = [nname,nage,ndate,ntitle,id];
@@ -274,7 +279,7 @@ app.put("/book/:id",async(req,res)=>{
     }catch(err){
         console.log("error in update")
     }
-});
+}));
 
 app.get("/review/:title",(req,res)=>{
     let {title} = req.params;
