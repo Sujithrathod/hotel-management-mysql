@@ -81,7 +81,6 @@ app.get("/",async(req,res)=>{
 app.get("/listings",async(req,res)=>{
     try{
         connection.query("select * from info",(err,results)=>{
-            if (err) throw err;
             res.render("./listings/index.ejs",{allListings : results});
         })
     }catch(err){
@@ -98,7 +97,6 @@ app.get("/listings/:title",async(req,res)=>{
     console.log(title);
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
-            if (err) throw err;
             res.render("./listings/show.ejs",{result : results[0]});
         })
     }catch(err){
@@ -112,7 +110,6 @@ app.put("/listings/:title",async(req,res)=>{
     const params = [ntitle, ndescription, nimage, nprice, nlocation, ncountry, title];
     try{
         connection.query(`UPDATE info SET title = ?,description = ?,image = ?,price = ? ,location = ? ,country = ? WHERE title = ?`,params,(err,result)=>{
-            if (err) throw err;
             console.log("got updated");
             res.redirect("/listings");
         })
@@ -126,7 +123,6 @@ app.delete("/listings/:title",async(req,res)=>{
     let {title} = req.params;
     try{
         connection.query("delete from info where title = ?",title,(err,result)=>{
-            if (err) throw err;
             console.log("delete is completed");
             res.redirect("/listings");
         })
@@ -140,7 +136,6 @@ app.post("/listings",async(req,res)=>{
     const data = [ntitle,ndescription,nimage,nprice,nlocation,ncountry];
     try{
         connection.query("insert into info (title,description,image, price,location,country) values (?,?,?,?,?,?)",data,(err,result)=>{
-            if (err) throw err;
             console.log("insert is done");
             res.redirect("/listings");
         })
@@ -153,7 +148,6 @@ app.get("/listings/:title/edit",async(req,res)=>{
     const {title} = req.params;
     try{
         connection.query(`select * from info where title = "${title}"`,(err,result)=>{
-            if (err) throw err;
             console.log("edit is updated");
             res.render("./listings/edit.ejs",{result : result[0]});
         })
@@ -167,7 +161,6 @@ app.post("/",async(req,res)=>{
     let data = [username,password];
     try{
         connection.query("insert into loginfo (username,password) values (?,?)",data,(err,result)=>{
-            if (err) throw err;
             console.log("loginfo is updated");
             res.redirect("/second");
         })
@@ -183,7 +176,6 @@ app.get("/second",(req,res)=>{
 app.get("/client",(req,res)=>{
     try{
         connection.query("select * from info",(err,results)=>{
-            if (err) throw err;
             res.render("./listings/client1.ejs",{allListings : results});
         })
     }catch(err){
@@ -195,7 +187,6 @@ app.get("/client/:title",async(req,res)=>{
     const {title} = req.params;
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
-            if (err) throw err;
             res.render("./listings/clientshow.ejs",{result : results[0]});
         })
     }catch(err){
@@ -207,7 +198,6 @@ app.get("/book/:title",async(req,res)=>{
     const {title} = req.params;
     try{
         connection.query(`select * from info where title = "${title}"`,(err,results)=>{
-            if (err) throw err;
             res.render("./listings/book.ejs",{result : results[0]});
         })
     }catch(err){
@@ -222,7 +212,6 @@ app.post("/book",async(req,res)=>{
     let q = "insert into client(id,name,date,age,title) values (?,?,?,?,?)";
     try{
         connection.query(q,data,(err,result)=>{
-            if (err) throw err;
             console.log("inserted");
             res.send("booking successful");
         })
@@ -235,7 +224,6 @@ app.get("/bookings",(req,res)=>{
     let q = "select * from client";
     try{
         connection.query(q,(err,results)=>{
-            if (err) throw err;
             res.render("./listings/bookings.ejs",{result : results});
         })
     }catch(err){
@@ -247,7 +235,6 @@ app.delete("/book/:id",(req,res)=>{
     let {id} = req.params;
     try{
         connection.query("DELETE FROM client WHERE id = ?", id,(err,result)=>{
-            if (err) throw err;
             console.log("deletion is completed");
             try{
                 connection.query("select * from client",(err,resul)=>{
@@ -266,7 +253,6 @@ app.get("/bookings/:id",(req,res)=>{
     let {id} = req.params;
     try{
         connection.query("select * from client where id = ?",id,(err,results)=>{
-            if (err) throw err;
             res.render("./listings/clientupdate.ejs", {result : results[0]})
             console.log(results);
         })
@@ -282,7 +268,6 @@ app.put("/book/:id",async(req,res)=>{
     console.log(params);
     try{
         connection.query(`UPDATE client SET name= ?, age= ?,date= ?, title = ? WHERE id = ?`,params,(err,result)=>{
-            if (err) throw err;
             console.log("got updated");
             res.redirect("/client");
         })
@@ -296,7 +281,6 @@ app.get("/review/:title",(req,res)=>{
     console.log(title);
     try{
         connection.query("select * from info where title = ?",title,(err,results)=>{
-            if (err) throw err;
             res.render("./listings/review.ejs",{res : results[0]})
         })
     }catch(err){
@@ -309,7 +293,6 @@ app.post("/review",(req,res)=>{
     let data = [ntitle,nname,nrating,ncomment];
     try{
         connection.query("insert into review(title,name,rating,comment) values (?,?,?,?)",data,(err,result)=>{
-            if (err) throw err;
             res.send("Thanks for your valuable time");
         })
     }catch(err){
@@ -320,10 +303,15 @@ app.post("/review",(req,res)=>{
 app.get("/reviews",(req,res)=>{
     try{
         connection.query("select * from review",(err,results)=>{
-            if (err) throw err;
             res.render("./listings/allreview.ejs",{result : results});
         })
     }catch(err){
         console.log("error in getting review");
     }
 })
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
